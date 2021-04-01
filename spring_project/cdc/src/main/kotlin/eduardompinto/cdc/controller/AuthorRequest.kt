@@ -7,11 +7,16 @@ import javax.validation.constraints.NotBlank
 data class AuthorRequest(
     @get:[NotBlank Email]
     val email: String,
-    @get:NotBlank
+    @get:[NotBlank]
     val name: String,
-    @get:NotBlank
+    @get:[NotBlank]
     val description: String,
 ) {
-    fun asAuthor(): Author =
-        Author(email = email, name = name, description = description)
+
+    fun asAuthor(): Author = Author(email = email, name = name, description = description)
+
+    override fun toString(): String {
+        return "AuthorRequest(name='$name', description='$description')"
+    }
+
 }

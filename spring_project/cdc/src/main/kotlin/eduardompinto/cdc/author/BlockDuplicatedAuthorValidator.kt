@@ -1,7 +1,5 @@
-package eduardompinto.cdc.controller.validators
+package eduardompinto.cdc.author
 
-import eduardompinto.cdc.controller.AuthorRequest
-import eduardompinto.cdc.repository.AuthorRepository
 import org.springframework.stereotype.Component
 import org.springframework.validation.Errors
 import org.springframework.validation.Validator
@@ -28,12 +26,16 @@ class BlockDuplicatedAuthorValidator(
             return
         }
         check(target is AuthorRequest) {
-            "BlockDuplicatedAuthorValidator supports ${AuthorRequest::class.qualifiedName}," +
+            "${this::class.simpleName} supports ${AuthorRequest::class.qualifiedName}," +
                 " received ${target::class.qualifiedName}"
         }
 
         if (authorRepository.existsByEmail(target.email)) {
-            errors.rejectValue("email", "email_already_taken", "email already registered on the platform")
+            errors.rejectValue(
+                "email",
+                "author, email_already_taken",
+                "author email already registered on the platform"
+            )
         }
     }
 }

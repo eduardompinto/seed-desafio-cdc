@@ -1,4 +1,4 @@
-package eduardompinto.cdc.model
+package eduardompinto.cdc.author
 
 import java.time.Instant
 import javax.persistence.Column

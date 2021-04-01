@@ -1,7 +1,7 @@
-package eduardompinto.cdc.controller
+package eduardompinto.cdc.author
 
-import eduardompinto.cdc.model.Author
-import eduardompinto.cdc.repository.AuthorRepository
+import eduardompinto.cdc.getForEntity
+import eduardompinto.cdc.postForEntity
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.DisplayName

@@ -1,6 +1,5 @@
-package eduardompinto.cdc.repository
+package eduardompinto.cdc.author
 
-import eduardompinto.cdc.model.Author
 import org.springframework.data.repository.CrudRepository
 
 interface AuthorRepository : CrudRepository<Author, Long> {

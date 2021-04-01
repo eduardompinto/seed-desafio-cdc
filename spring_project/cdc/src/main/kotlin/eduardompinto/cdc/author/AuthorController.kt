@@ -1,9 +1,6 @@
-package eduardompinto.cdc.controller
+package eduardompinto.cdc.author
 
-import eduardompinto.cdc.controller.validators.BlockDuplicatedAuthorValidator
-import eduardompinto.cdc.model.Author
-import eduardompinto.cdc.repository.AuthorRepository
-import org.springframework.http.HttpStatus
+import eduardompinto.cdc.extensions.build
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.http.HttpStatus.OK
 import org.springframework.http.MediaType
@@ -42,20 +39,17 @@ class AuthorController(
 
     @PostMapping("/authors/", consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun saveAuthor(@RequestBody @Valid authorReq: AuthorRequest): ResponseEntity<Author> {
-        return OK.build(authorReq.asAuthor().save())
+        return authorReq.asAuthor().save().run(OK::build)
     }
 
     @GetMapping("/authors/{id}", produces = [MediaType.APPLICATION_JSON_VALUE])
     fun getAuthor(@PathVariable id: Long): ResponseEntity<Author> {
         val author: Optional<Author> = repository.findById(id)
         return when {
-            author.isPresent -> OK.build(author.get())
+            author.isPresent -> author.get().run(OK::build)
             else -> NOT_FOUND.build()
         }
     }
-
-    private fun <T> HttpStatus.build(t: T? = null): ResponseEntity<T> =
-        ResponseEntity.status(this).body(t)
 
     private fun Author.save(): Author = run(repository::save)
 }

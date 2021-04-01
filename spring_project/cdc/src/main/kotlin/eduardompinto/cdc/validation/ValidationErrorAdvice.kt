@@ -1,4 +1,4 @@
-package eduardompinto.cdc.controller
+package eduardompinto.cdc.validation
 
 import com.fasterxml.jackson.module.kotlin.MissingKotlinParameterException
 import org.springframework.http.HttpStatus
@@ -19,5 +19,4 @@ class ValidationErrorAdvice {
     fun handleInvalidValues(e: Exception): ValidationError {
         return ValidationError.fromException(e)
     }
-
 }

@@ -1,4 +1,4 @@
-package eduardompinto.cdc.controller
+package eduardompinto.cdc
 
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.http.ResponseEntity

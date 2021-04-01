@@ -1,6 +1,5 @@
-package eduardompinto.cdc.controller
+package eduardompinto.cdc.author
 
-import eduardompinto.cdc.model.Author
 import javax.validation.constraints.Email
 import javax.validation.constraints.NotBlank
 

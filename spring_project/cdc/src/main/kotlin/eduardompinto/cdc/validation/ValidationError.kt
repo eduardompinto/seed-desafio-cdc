@@ -1,4 +1,4 @@
-package eduardompinto.cdc.controller
+package eduardompinto.cdc.validation
 
 import com.fasterxml.jackson.module.kotlin.MissingKotlinParameterException
 import org.springframework.validation.FieldError
@@ -24,4 +24,3 @@ data class ValidationError(val errors: List<Violation>) {
             }
     }
 }
-

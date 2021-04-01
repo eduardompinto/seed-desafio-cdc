@@ -1,6 +1,8 @@
 package eduardompinto.cdc.author
 
 import eduardompinto.cdc.extensions.build
+import eduardompinto.cdc.validation.UniqueFieldValidator
+import eduardompinto.cdc.validation.buildUniqueFieldValidator
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.http.HttpStatus.OK
 import org.springframework.http.MediaType
@@ -27,14 +29,15 @@ import javax.validation.Valid
  */
 @RestController
 @Validated
-class AuthorController(
-    private val repository: AuthorRepository,
-    private val blockDuplicatedAuthorValidator: BlockDuplicatedAuthorValidator,
-) {
+class AuthorController(private val repository: AuthorRepository) {
 
     @InitBinder
     fun init(binder: WebDataBinder) {
-        binder.addValidators(blockDuplicatedAuthorValidator)
+        val uniqueEmailValidator: UniqueFieldValidator<AuthorRequest> = buildUniqueFieldValidator(
+            fieldName = "email",
+            predicate = { repository.existsByEmail(it.email) }
+        )
+        binder.addValidators(uniqueEmailValidator)
     }
 
     @PostMapping("/authors/", consumes = [MediaType.APPLICATION_JSON_VALUE])

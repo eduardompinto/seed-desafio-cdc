@@ -1,6 +1,8 @@
 package eduardompinto.cdc.category
 
 import eduardompinto.cdc.extensions.build
+import eduardompinto.cdc.validation.UniqueFieldValidator
+import eduardompinto.cdc.validation.buildUniqueFieldValidator
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.http.HttpStatus.OK
 import org.springframework.http.ResponseEntity
@@ -15,14 +17,15 @@ import java.util.Optional
 import javax.validation.Valid
 
 @RestController
-class CategoryController(
-    private val repository: CategoryRepository,
-    private val blockDuplicatedCategoryValidator: BlockDuplicatedCategoryValidator
-) {
+class CategoryController(private val repository: CategoryRepository) {
 
     @InitBinder
     fun init(binder: WebDataBinder) {
-        binder.addValidators(blockDuplicatedCategoryValidator)
+        val uniqueName: UniqueFieldValidator<CategoryRequest> = buildUniqueFieldValidator(
+            fieldName = "name",
+            predicate = { repository.existsByName(it.name) },
+        )
+        binder.addValidators(uniqueName)
     }
 
     @PostMapping("/categories/")

@@ -6,7 +6,6 @@ import java.util.function.Predicate
 
 abstract class GenericValidator<T>(
     private val requestClass: Class<T>,
-    private val testedClass: Class<*>,
     private val predicate: Predicate<T>,
     private val fieldName: String,
     private val errorCodeSuffix: String,
@@ -16,6 +15,7 @@ abstract class GenericValidator<T>(
         return cls.isAssignableFrom(requestClass)
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun validate(target: Any, errors: Errors) {
         if (errors.hasErrors()) {
             return
@@ -24,7 +24,7 @@ abstract class GenericValidator<T>(
             errors.rejectValue(
                 fieldName,
                 "${fieldName}_$errorCodeSuffix",
-                "${testedClass.simpleName} $fieldName $messageSuffix"
+                "$fieldName $messageSuffix"
             )
         }
     }

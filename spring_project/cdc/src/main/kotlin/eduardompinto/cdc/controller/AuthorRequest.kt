@@ -18,5 +18,4 @@ data class AuthorRequest(
     override fun toString(): String {
         return "AuthorRequest(name='$name', description='$description')"
     }
-
 }

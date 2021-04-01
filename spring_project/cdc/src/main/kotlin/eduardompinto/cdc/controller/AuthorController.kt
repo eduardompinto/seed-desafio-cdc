@@ -17,14 +17,29 @@ import org.springframework.web.bind.annotation.RestController
 import java.util.Optional
 import javax.validation.Valid
 
+/**
+ * 8 points
+ *
+ * 1 - AuthorRepository
+ * 2 - AuthorRequest
+ * 3 - Author
+ * 4 - ValidationError
+ * 6 - saveAuthor (when 2 conditions)
+ * 8 - getAuthor (when 2 conditions)
+ */
 @RestController
 @Validated
 class AuthorController(private val repository: AuthorRepository) {
 
     @PostMapping("/authors/", consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun saveAuthor(@RequestBody @Valid authorReq: AuthorRequest): ResponseEntity<Author> {
+    fun saveAuthor(@RequestBody @Valid authorReq: AuthorRequest): ResponseEntity<*> {
         return when {
-            repository.existsByEmail(authorReq.email) -> CONFLICT.build()
+            repository.existsByEmail(authorReq.email) -> CONFLICT.build(
+                ValidationError(
+                    field = "email",
+                    message = "email already registered on the platform"
+                )
+            )
             else -> OK.build(authorReq.asAuthor().save())
         }
     }

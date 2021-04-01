@@ -13,7 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.http.HttpStatus.BAD_REQUEST
-import org.springframework.http.HttpStatus.CONFLICT
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.http.HttpStatus.OK
 
@@ -50,7 +49,7 @@ class AuthorControllerTest(
     }
 
     @Test
-    @DisplayName("when the author email already exists, POST should return 409(CONFLICT)")
+    @DisplayName("when the author email already exists, POST should return 400(BAD_REQUEST)")
     fun failToSavedDuplicatedAuthor() {
         val req = AuthorRequest(
             email = "new_author@example.com",
@@ -61,8 +60,8 @@ class AuthorControllerTest(
         with(restTemplate.postForEntity<Author>(url = url, req = req)) {
             assertThat(statusCode).isEqualTo(OK)
         }
-        with(restTemplate.postForEntity<Author>(url = url, req = req)) {
-            assertThat(statusCode).isEqualTo(CONFLICT)
+        with(restTemplate.postForEntity<String>(url = url, req = req)) {
+            assertThat(statusCode).isEqualTo(BAD_REQUEST)
         }
     }
 

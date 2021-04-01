@@ -19,13 +19,13 @@ import java.util.Optional
 import javax.validation.Valid
 
 /**
- * 6 points
+ * 7 points
  *
  * 1 - AuthorRepository
- * 2 - BlockDuplicatedAuthorValidator
- * 3 - AuthorRequest
- * 4 - Author
- * 6 - getAuthor (when 2 conditions)
+ * 2,3 - UniqueFieldValidator / Predicate
+ * 4 - AuthorRequest
+ * 5 - Author
+ * 6,7 - getAuthor
  */
 @RestController
 @Validated

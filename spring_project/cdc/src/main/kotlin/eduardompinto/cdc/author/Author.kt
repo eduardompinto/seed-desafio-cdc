@@ -6,13 +6,27 @@ import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
+import javax.persistence.Index
+import javax.persistence.Table
+import javax.persistence.UniqueConstraint
 import javax.validation.constraints.Email
 import javax.validation.constraints.NotBlank
 
-@Entity
+@Entity(name = "authors")
+@Table(
+    indexes = [
+        Index(name = "authors_email_idx", columnList = "email")
+    ],
+    uniqueConstraints = [
+        UniqueConstraint(name = "authors_email_uk", columnNames = ["email"])
+    ]
+)
 class Author(
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(
+        strategy = GenerationType.SEQUENCE,
+        generator = "authors_seq"
+    )
     val id: Long = 0,
 
     @Column(nullable = false)
@@ -22,7 +36,7 @@ class Author(
     @get:NotBlank
     val description: String,
 
-    @Column(unique = true, nullable = false, length = 254)
+    @Column(nullable = false, length = 254)
     @get:Email
     @get:NotBlank
     val email: String,

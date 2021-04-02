@@ -4,7 +4,7 @@ import org.springframework.validation.Errors
 import org.springframework.validation.Validator
 import java.util.function.Predicate
 
-abstract class GenericValidator<T>(
+abstract class GenericFieldValidator<T>(
     private val requestClass: Class<T>,
     private val predicate: Predicate<T>,
     private val fieldName: String,
@@ -17,9 +17,6 @@ abstract class GenericValidator<T>(
 
     @Suppress("UNCHECKED_CAST")
     override fun validate(target: Any, errors: Errors) {
-        if (errors.hasErrors()) {
-            return
-        }
         if (predicate.test(target as T)) {
             errors.rejectValue(
                 fieldName,

@@ -7,11 +7,15 @@ plugins {
     kotlin("plugin.spring") version "1.4.31"
     kotlin("plugin.jpa") version "1.4.31"
     id("org.jlleitschuh.gradle.ktlint") version "10.0.0"
+    id("com.avast.gradle.docker-compose") version "0.14.2"
 }
 
 group = "eduardompinto"
 version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_11
+
+dockerCompose.isRequiredBy(tasks.getByName("test"))
+dockerCompose.isRequiredBy(tasks.getByName("bootRun"))
 
 configurations {
     compileOnly {
@@ -31,9 +35,13 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
-    runtimeOnly("com.h2database:h2") // Toy project, so it's ok h2
+    runtimeOnly("org.postgresql:postgresql")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+}
+
+dockerCompose {
+    this.composeLogToFile = project.file("build/docker-logs.txt")
 }
 
 tasks.withType<KotlinCompile> {
@@ -45,4 +53,7 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+    this.testLogging {
+        events("passed", "skipped", "failed")
+    }
 }

@@ -5,15 +5,29 @@ import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
+import javax.persistence.Index
+import javax.persistence.Table
+import javax.persistence.UniqueConstraint
 import javax.validation.constraints.NotBlank
 
-@Entity
+@Entity(name = "categories")
+@Table(
+    indexes = [
+        Index(name = "categories_title_idx", columnList = "name")
+    ],
+    uniqueConstraints = [
+        UniqueConstraint(name = "categories_name_uk", columnNames = ["name"])
+    ]
+)
 class Category(
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(
+        strategy = GenerationType.SEQUENCE,
+        generator = "categories_seq"
+    )
     val id: Long = 0,
 
-    @Column(nullable = false, unique = true, length = 200)
+    @Column(nullable = false, length = 200)
     @get:NotBlank
     val name: String,
 ) {

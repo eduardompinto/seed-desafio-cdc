@@ -2,7 +2,7 @@ package eduardompinto.cdc.validation
 
 import java.util.function.Predicate
 
-class UniqueFieldValidator<T>(
+class ForeignKeyExistsFieldValidator<T>(
     requestClass: Class<T>,
     predicate: Predicate<T>,
     fieldName: String,
@@ -10,17 +10,17 @@ class UniqueFieldValidator<T>(
     requestClass = requestClass,
     predicate = predicate,
     fieldName = fieldName,
-    errorCodeSuffix = "already_taken",
-    messageSuffix = "already registered on the platform"
+    errorCodeSuffix = "must_exist",
+    messageSuffix = "foreign key doesn't exists",
 ) {
     companion object {
         inline fun <reified T> build(
             fieldName: String,
             predicate: Predicate<T>,
-        ) = UniqueFieldValidator(
-            requestClass = T::class.java,
-            predicate = predicate,
-            fieldName = fieldName
+        ) = ForeignKeyExistsFieldValidator(
+            T::class.java,
+            predicate,
+            fieldName
         )
     }
 }

@@ -1,9 +1,9 @@
 package eduardompinto.cdc.category
 
 import eduardompinto.cdc.extensions.build
+import eduardompinto.cdc.extensions.okOrNotFound
 import eduardompinto.cdc.validation.UniqueFieldValidator
-import eduardompinto.cdc.validation.buildUniqueFieldValidator
-import org.springframework.http.HttpStatus.NOT_FOUND
+import eduardompinto.cdc.validation.UniqueFieldValidator.Companion.build
 import org.springframework.http.HttpStatus.OK
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.WebDataBinder
@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
-import java.util.Optional
 import javax.validation.Valid
 
 @RestController
@@ -21,7 +20,7 @@ class CategoryController(private val repository: CategoryRepository) {
 
     @InitBinder
     fun init(binder: WebDataBinder) {
-        val uniqueName: UniqueFieldValidator<CategoryRequest> = buildUniqueFieldValidator(
+        val uniqueName: UniqueFieldValidator<CategoryRequest> = build(
             fieldName = "name",
             predicate = { repository.existsByName(it.name) },
         )
@@ -30,17 +29,11 @@ class CategoryController(private val repository: CategoryRepository) {
 
     @PostMapping("/categories/")
     fun saveCategory(@Valid @RequestBody req: CategoryRequest): ResponseEntity<Category> {
-        return req.asCategory().save().run(OK::build)
+        return req.asCategory().run(repository::save).run(OK::build)
     }
 
     @GetMapping("/categories/{id}")
     fun getCategory(@PathVariable id: Long): ResponseEntity<Category> {
-        val category: Optional<Category> = repository.findById(id)
-        return when {
-            category.isPresent -> category.get().run(OK::build)
-            else -> NOT_FOUND.build()
-        }
+        return repository.findById(id).okOrNotFound()
     }
-
-    private fun Category.save() = repository.save(this)
 }

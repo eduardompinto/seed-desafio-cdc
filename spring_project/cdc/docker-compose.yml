@@ -1,0 +1,10 @@
+version: "3"
+services:
+  database:
+    image: postgres:11.6-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USERNAME=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=cdc

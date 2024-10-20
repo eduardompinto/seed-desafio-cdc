@@ -14,7 +14,7 @@ object Repository {
                 statement[description] = author.description
                 statement[email] = author.email
                 statement[createdAt] = LocalDateTime.ofInstant(author.createdAt, ZoneOffset.UTC)
-            }[AuthorTable.id]
+            }[AuthorTable.id].value
         }
 
     suspend fun read(id: Int): Author? {

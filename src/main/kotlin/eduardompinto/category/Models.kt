@@ -3,7 +3,7 @@ package eduardompinto.category
 import eduardompinto.plugins.UniqueStringField
 import io.ktor.server.plugins.requestvalidation.ValidationResult
 import kotlinx.serialization.Serializable
-import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.dao.id.IntIdTable
 
 data class Category(val name: String) {
     init {
@@ -41,8 +41,6 @@ data class CategoryResponse(
     }
 }
 
-object CategoryTable : Table() {
-    val id = integer("id").autoIncrement()
+object CategoryTable : IntIdTable() {
     val name = varchar("name", length = 200).uniqueIndex()
-    override val primaryKey = PrimaryKey(id)
 }

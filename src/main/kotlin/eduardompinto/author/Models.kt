@@ -4,7 +4,7 @@ import eduardompinto.plugins.UniqueStringField
 import eduardompinto.plugins.isValidEmail
 import io.ktor.server.plugins.requestvalidation.ValidationResult
 import kotlinx.serialization.Serializable
-import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.javatime.datetime
 import java.time.Instant
 
@@ -85,11 +85,9 @@ data class AuthorResponse(
  * Represents the database schema for an Author.
  * This class should be used to create the database table.
  */
-object AuthorTable : Table() {
-    val id = integer("id").autoIncrement()
+object AuthorTable : IntIdTable() {
     val name = varchar("name", length = 50)
     val email = varchar("email", length = 255).uniqueIndex()
     val description = varchar("description", length = 400)
     val createdAt = datetime("created_at")
-    override val primaryKey = PrimaryKey(id)
 }

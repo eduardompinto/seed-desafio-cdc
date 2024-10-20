@@ -1,6 +1,7 @@
 package eduardompinto.plugins
 
 import eduardompinto.author.AuthorTable
+import eduardompinto.book.BookTable
 import eduardompinto.category.CategoryTable
 import io.ktor.server.application.Application
 import kotlinx.coroutines.Dispatchers
@@ -33,4 +34,5 @@ val tables =
     listOf<Table>(
         AuthorTable,
         CategoryTable,
+        BookTable,
     )

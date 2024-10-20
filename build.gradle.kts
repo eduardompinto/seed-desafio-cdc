@@ -42,5 +42,3 @@ dependencies {
     testImplementation(libs.testcontainers)
     testImplementation(libs.testcontainers.postgresql)
 }
-
-

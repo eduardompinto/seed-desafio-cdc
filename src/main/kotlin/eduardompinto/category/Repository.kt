@@ -9,7 +9,7 @@ object Repository {
         dbQuery {
             CategoryTable.insert { statement ->
                 statement[name] = category.name
-            }[CategoryTable.id]
+            }[CategoryTable.id].value
         }
 
     suspend fun readCategory(id: Int): Category? {

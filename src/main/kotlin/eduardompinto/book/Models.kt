@@ -1,0 +1,126 @@
+package eduardompinto.book
+
+import eduardompinto.author.Author
+import eduardompinto.author.AuthorTable
+import eduardompinto.category.Category
+import eduardompinto.category.CategoryTable
+import eduardompinto.plugins.validateRowExist
+import io.ktor.server.plugins.requestvalidation.ValidationResult
+import kotlinx.serialization.Serializable
+import org.jetbrains.exposed.dao.id.IntIdTable
+import org.jetbrains.exposed.sql.javatime.datetime
+import java.time.LocalDateTime
+
+data class Book(
+    val title: String,
+    val summary: String,
+    val content: String,
+    val price: Double,
+    val pages: Int,
+    val isbn: String,
+    val publishedAt: LocalDateTime,
+    val category: Category,
+    val author: Author,
+) {
+    init {
+        require(title.isNotBlank()) { "Title is required" }
+        require(summary.isNotBlank() && summary.length <= 500) {
+            "Summary is required and must have at most 500 characters"
+        }
+        require(price >= 20) { "Price must be at least 20" }
+        require(pages >= 100) { "Pages must be at least 100" }
+        require(isbn.isNotBlank()) { "Isbn is required" }
+    }
+}
+
+@Serializable
+data class BookRequest(
+    val title: String,
+    val summary: String,
+    val content: String,
+    val price: Double,
+    val pages: Int,
+    val isbn: String,
+    val publishedAtISO8601: String,
+    val categoryId: Int,
+    val authorId: Int,
+) {
+
+    suspend fun validate(): ValidationResult {
+        val violations =
+            buildList {
+                if (title.isBlank()) {
+                    add("Title is required")
+                }
+                if (summary.isBlank() || summary.length > 500) {
+                    add("Summary is required and must have at most 500 characters")
+                }
+                if (price < 20) {
+                    add("Price must be at least 20")
+                }
+                if (pages < 100) {
+                    add("Pages must be at least 100")
+                }
+                if (isbn.isBlank()) {
+                    add("Isbn is required")
+                }
+                // check if publishedAtISO8601 is after now
+                if (publishedAtISO8601.isBlank()) {
+                    add("PublishedAt is required")
+                }
+                if (publishedAtISO8601.run(LocalDateTime::parse).isBefore(LocalDateTime.now())) {
+                    add("PublishedAt must be in the future")
+                }
+                if (!validateRowExist(CategoryTable, categoryId)) {
+                    add("Category does not exist")
+                }
+                if (!validateRowExist(AuthorTable, authorId)) {
+                    add("Author does not exist")
+                }
+            }
+        return if (violations.isNotEmpty()) {
+            ValidationResult.Invalid(violations)
+        } else {
+            ValidationResult.Valid
+        }
+    }
+}
+
+data class BookInsert private constructor(
+    val title: String,
+    val summary: String,
+    val content: String,
+    val price: Double,
+    val pages: Int,
+    val isbn: String,
+    val publishedAt: LocalDateTime,
+    val categoryId: Int,
+    val authorId: Int,
+) {
+    companion object {
+        fun fromRequest(request: BookRequest) =
+            BookInsert(
+                title = request.title,
+                summary = request.summary,
+                content = request.content,
+                price = request.price,
+                pages = request.pages,
+                isbn = request.isbn,
+                publishedAt = LocalDateTime.parse(request.publishedAtISO8601),
+                categoryId = request.categoryId,
+                authorId = request.authorId,
+            )
+    }
+}
+
+object BookTable : IntIdTable() {
+    val title = varchar("title", length = 200)
+    val summary = varchar("summary", length = 500)
+    val content = text("content")
+    val price = double("price")
+    val pages = integer("pages")
+    val isbn = varchar("isbn", length = 20)
+    val publishedAt = datetime("published_at")
+    val categoryId = reference("category_id", CategoryTable)
+    val authorId = reference("author_id", AuthorTable)
+}

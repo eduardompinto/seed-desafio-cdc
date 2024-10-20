@@ -1,15 +1,15 @@
 package eduardompinto.plugins
 
 import eduardompinto.author.AuthorRequest
+import eduardompinto.book.BookRequest
 import eduardompinto.category.CategoryRequest
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.plugins.requestvalidation.RequestValidation
 import io.ktor.server.plugins.requestvalidation.ValidationResult
+import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.Column
-import org.jetbrains.exposed.sql.StdOutSqlLogger
 import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.addLogger
 import org.jetbrains.exposed.sql.selectAll
 import java.lang.reflect.Field
 import kotlin.reflect.KClass
@@ -18,6 +18,7 @@ fun Application.configureValidation() {
     install(RequestValidation) {
         validate<AuthorRequest> { it.validate() }
         validate<CategoryRequest> { it.validate() }
+        validate<BookRequest> { it.validate() }
         validate {
             filter { true }
             validation { validateUniqueStringField(it) }
@@ -32,6 +33,15 @@ private val emailRegex =
 
 fun isValidEmail(email: String): Boolean {
     return email.matches(emailRegex)
+}
+
+suspend fun validateRowExist(
+    table: IntIdTable,
+    id: Int,
+): Boolean {
+    return dbQuery {
+        table.selectAll().where { table.id eq id }.any()
+    }
 }
 
 private suspend fun <T> validateUniqueStringField(model: T): ValidationResult {
@@ -75,21 +85,3 @@ private inline fun <T, reified A : Annotation> getFields(model: T): List<Field> 
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FIELD)
 annotation class UniqueStringField(val table: KClass<out Table>, val columnName: String)
-
-// Another possible approach to validate unique fields
-
-// suspend fun <R, C> validateUnique(request: R, validation: UniqueValidation<C>): ValidationResult {
-//    checkNotNull(request)
-//    val field: KCallable<*> = request::class.declaredMembers.first { it.name == validation.requestField }
-//    val value: C = field.call(request) as C
-//
-//    val isUnique = dbQuery {
-//        validation.table.selectAll().where { validation.column eq value }.count() == 0L
-//    }
-//
-//    return when {
-//        isUnique -> ValidationResult.Valid
-//        else -> ValidationResult.Invalid("Field ${validation.requestField} has to be unique")
-//    }
-//
-// }

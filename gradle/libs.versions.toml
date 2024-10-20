@@ -7,6 +7,7 @@ prometheus-version = "1.6.13"
 postgres-version = "0.8.9"
 h2-version = "2.2.224"
 exposed-version = "0.53.0"
+testcontainers-version = "1.20.2"
 
 [libraries]
 ktor-server-core = { module = "io.ktor:ktor-server-core-jvm", version.ref = "ktor-version" }
@@ -27,8 +28,8 @@ logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "lo
 ktor-server-config-yaml = { module = "io.ktor:ktor-server-config-yaml", version.ref = "ktor-version" }
 ktor-server-test-host = { module = "io.ktor:ktor-server-test-host-jvm", version.ref = "ktor-version" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin-version" }
-testcontainers = { module = "org.testcontainers:testcontainers", version = "testcontainers-version" }
-testcontainers-postgresql = { module = "org.testcontainers:postgresql", version = "testcontainers-version" }
+testcontainers = { module = "org.testcontainers:testcontainers", version.ref = "testcontainers-version" }
+testcontainers-postgresql = { module = "org.testcontainers:postgresql", version.ref = "testcontainers-version" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-version" }

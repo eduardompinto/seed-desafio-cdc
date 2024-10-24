@@ -3,6 +3,8 @@ package eduardompinto.plugins
 import eduardompinto.author.AuthorTable
 import eduardompinto.book.BookTable
 import eduardompinto.category.CategoryTable
+import eduardompinto.country.CountryTable
+import eduardompinto.country.state.CountryStateTable
 import io.ktor.server.application.Application
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.sql.Database
@@ -35,4 +37,6 @@ val tables =
         AuthorTable,
         CategoryTable,
         BookTable,
+        CountryTable,
+        CountryStateTable,
     )

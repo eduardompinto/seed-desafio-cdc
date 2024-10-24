@@ -3,6 +3,7 @@ package eduardompinto.plugins
 import eduardompinto.author.AuthorRequest
 import eduardompinto.book.BookRequest
 import eduardompinto.category.CategoryRequest
+import eduardompinto.country.state.CountryStateRequest
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.plugins.requestvalidation.RequestValidation
@@ -19,6 +20,7 @@ fun Application.configureValidation() {
         validate<AuthorRequest> { it.validate() }
         validate<CategoryRequest> { it.validate() }
         validate<BookRequest> { it.validate() }
+        validate<CountryStateRequest> { it.validate() }
         validate {
             filter { true }
             validation { validateUniqueStringField(it) }

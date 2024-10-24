@@ -1,9 +1,9 @@
 ktor:
-    application:
-        modules:
-            - eduardompinto.ApplicationKt.module
-    deployment:
-        port: 8080
-        watch:
-            - classes
-    development: true
+  application:
+    modules:
+      - eduardompinto.ApplicationKt.module
+  deployment:
+    port: 8080
+    watch:
+      - classes
+  development: true

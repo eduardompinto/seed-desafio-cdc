@@ -33,11 +33,11 @@ data class CategoryRequest(
 }
 
 @Serializable
-data class CategoryResponse(
+data class ExposedCategory(
     val name: String,
 ) {
     companion object {
-        fun fromCategory(category: Category) = CategoryResponse(category.name)
+        fun fromCategory(category: Category) = ExposedCategory(category.name)
     }
 }
 

@@ -17,8 +17,12 @@ fun Application.configureStatusPage() {
         exception<BadRequestException> { call: ApplicationCall, cause: BadRequestException ->
             when (cause.cause) {
                 is IllegalArgumentException, is JsonConvertException -> {
-                    call.respond(HttpStatusCode.UnprocessableEntity, cause.cause!!.message ?: "Failed to validate the request")
+                    call.respond(
+                        HttpStatusCode.UnprocessableEntity,
+                        cause.cause!!.message ?: "Failed to validate the request",
+                    )
                 }
+
                 else -> call.respond(HttpStatusCode.BadRequest)
             }
         }

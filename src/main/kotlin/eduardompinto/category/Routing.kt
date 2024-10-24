@@ -19,7 +19,7 @@ fun Routing.categories() {
         val result = Repository.readCategory(id)
         when (result) {
             null -> call.respond(HttpStatusCode.NotFound)
-            else -> call.respond(HttpStatusCode.OK, CategoryResponse.fromCategory(result))
+            else -> call.respond(HttpStatusCode.OK, ExposedCategory.fromCategory(result))
         }
     }
 }

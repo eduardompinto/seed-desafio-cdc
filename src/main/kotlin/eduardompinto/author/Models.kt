@@ -71,13 +71,13 @@ data class AuthorRequest(
  * This class should be used to send data to the client.
  */
 @Serializable
-data class AuthorResponse(
+data class ExposedAuthor(
     val name: String,
     val email: String,
     val description: String,
 ) {
     companion object {
-        fun fromAuthor(author: Author) = AuthorResponse(author.name, author.email, author.description)
+        fun fromAuthor(author: Author) = ExposedAuthor(author.name, author.email, author.description)
     }
 }
 

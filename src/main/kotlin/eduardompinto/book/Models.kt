@@ -8,9 +8,14 @@ import eduardompinto.plugins.validateRowExist
 import io.ktor.server.plugins.requestvalidation.ValidationResult
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.dao.id.IntIdTable
+import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.javatime.datetime
 import java.time.LocalDateTime
 
+/**
+ * This is the business model for a book.
+ * It shouldn't be exposed to the client.
+ */
 data class Book(
     val title: String,
     val summary: String,
@@ -45,7 +50,6 @@ data class BookRequest(
     val categoryId: Int,
     val authorId: Int,
 ) {
-
     suspend fun validate(): ValidationResult {
         val violations =
             buildList {
@@ -86,7 +90,7 @@ data class BookRequest(
     }
 }
 
-data class BookInsert private constructor(
+class BookInsert private constructor(
     val title: String,
     val summary: String,
     val content: String,
@@ -110,6 +114,57 @@ data class BookInsert private constructor(
                 categoryId = request.categoryId,
                 authorId = request.authorId,
             )
+    }
+}
+
+@Serializable
+data class ExposedBookList(
+    val title: String,
+    val id: Int,
+) {
+    companion object {
+        fun fromRow(row: ResultRow) =
+            ExposedBookList(
+                title = row[BookTable.title],
+                id = row[BookTable.id].value,
+            )
+    }
+}
+
+@Serializable
+data class ExposedBook(
+    val title: String,
+    val summary: String,
+    val content: String,
+    val price: Double,
+    val pages: Int,
+    val isbn: String,
+    val publishedAt: String,
+    val author: BookAuthor,
+) {
+    @Serializable
+    data class BookAuthor(
+        val name: String,
+        val description: String,
+    )
+
+    companion object {
+        fun fromRow(resultRow: ResultRow): ExposedBook {
+            return ExposedBook(
+                title = resultRow[BookTable.title],
+                summary = resultRow[BookTable.summary],
+                content = resultRow[BookTable.content],
+                price = resultRow[BookTable.price],
+                pages = resultRow[BookTable.pages],
+                isbn = resultRow[BookTable.isbn],
+                publishedAt = resultRow[BookTable.publishedAt].toString(),
+                author =
+                    BookAuthor(
+                        name = resultRow[AuthorTable.name],
+                        description = resultRow[AuthorTable.description],
+                    ),
+            )
+        }
     }
 }
 

@@ -20,7 +20,7 @@ fun Routing.authors() {
         val result = Repository.read(id)
         when (result) {
             null -> call.respond(HttpStatusCode.NotFound)
-            else -> call.respond(HttpStatusCode.OK, AuthorResponse.fromAuthor(result))
+            else -> call.respond(HttpStatusCode.OK, ExposedAuthor.fromAuthor(result))
         }
     }
 }

@@ -1,6 +1,9 @@
 package eduardompinto.country.state
 
 import eduardompinto.country.CountryTable
+import eduardompinto.plugins.NotBlank
+import eduardompinto.plugins.ValidRequest
+import eduardompinto.plugins.Validatable
 import eduardompinto.plugins.dbQuery
 import io.ktor.server.plugins.requestvalidation.ValidationResult
 import kotlinx.serialization.Serializable
@@ -20,19 +23,14 @@ data class CountryState(
 }
 
 @Serializable
+@ValidRequest
 data class CountryStateRequest(
-    val name: String,
-    val country: String,
-) {
-    suspend fun validate(): ValidationResult {
+    @NotBlank val name: String,
+    @NotBlank val country: String,
+) : Validatable {
+    override suspend fun validate(): ValidationResult {
         val reasons =
             buildList {
-                if (name.isBlank()) {
-                    add("name cannot be blank")
-                }
-                if (country.isBlank()) {
-                    add("country cannot be blank")
-                }
                 dbQuery {
                     addLogger(StdOutSqlLogger)
                     CountryStateTable.selectAll().where { CountryStateTable.name eq name }.union(

@@ -4,6 +4,9 @@ import eduardompinto.author.Author
 import eduardompinto.author.AuthorTable
 import eduardompinto.category.Category
 import eduardompinto.category.CategoryTable
+import eduardompinto.plugins.NotBlank
+import eduardompinto.plugins.ValidRequest
+import eduardompinto.plugins.Validatable
 import eduardompinto.plugins.validateRowExist
 import io.ktor.server.plugins.requestvalidation.ValidationResult
 import kotlinx.serialization.Serializable
@@ -39,38 +42,29 @@ data class Book(
 }
 
 @Serializable
+@ValidRequest
 data class BookRequest(
-    val title: String,
-    val summary: String,
+    @NotBlank val title: String,
+    @NotBlank val summary: String,
     val content: String,
     val price: Double,
     val pages: Int,
-    val isbn: String,
-    val publishedAtISO8601: String,
+    @NotBlank val isbn: String,
+    @NotBlank val publishedAtISO8601: String,
     val categoryId: Int,
     val authorId: Int,
-) {
-    suspend fun validate(): ValidationResult {
+) : Validatable {
+    override suspend fun validate(): ValidationResult {
         val violations =
             buildList {
-                if (title.isBlank()) {
-                    add("Title is required")
-                }
-                if (summary.isBlank() || summary.length > 500) {
-                    add("Summary is required and must have at most 500 characters")
+                if (summary.length > 500) {
+                    add("Summary must have at most 500 characters")
                 }
                 if (price < 20) {
                     add("Price must be at least 20")
                 }
                 if (pages < 100) {
                     add("Pages must be at least 100")
-                }
-                if (isbn.isBlank()) {
-                    add("Isbn is required")
-                }
-                // check if publishedAtISO8601 is after now
-                if (publishedAtISO8601.isBlank()) {
-                    add("PublishedAt is required")
                 }
                 if (publishedAtISO8601.run(LocalDateTime::parse).isBefore(LocalDateTime.now())) {
                     add("PublishedAt must be in the future")

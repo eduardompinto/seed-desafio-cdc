@@ -1,7 +1,8 @@
 package eduardompinto.category
 
+import eduardompinto.plugins.NotBlank
 import eduardompinto.plugins.UniqueStringField
-import io.ktor.server.plugins.requestvalidation.ValidationResult
+import eduardompinto.plugins.ValidRequest
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.dao.id.IntIdTable
 
@@ -12,23 +13,12 @@ data class Category(val name: String) {
 }
 
 @Serializable
+@ValidRequest
 data class CategoryRequest(
+    @NotBlank
     @UniqueStringField(CategoryTable::class, "name")
     val name: String,
 ) {
-    fun validate(): ValidationResult.Valid {
-        val reasons =
-            buildList {
-                if (name.isBlank()) {
-                    add("name cannot be blank")
-                }
-            }
-        if (reasons.isNotEmpty()) {
-            ValidationResult.Invalid(reasons)
-        }
-        return ValidationResult.Valid
-    }
-
     fun toCategory() = Category(name)
 }
 

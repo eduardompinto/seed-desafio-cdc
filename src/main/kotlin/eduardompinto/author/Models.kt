@@ -1,6 +1,9 @@
 package eduardompinto.author
 
+import eduardompinto.plugins.NotBlank
 import eduardompinto.plugins.UniqueStringField
+import eduardompinto.plugins.ValidRequest
+import eduardompinto.plugins.Validatable
 import eduardompinto.plugins.isValidEmail
 import io.ktor.server.plugins.requestvalidation.ValidationResult
 import kotlinx.serialization.Serializable
@@ -32,25 +35,17 @@ data class Author(
  * This class should be used to receive data from the client.
  */
 @Serializable
+@ValidRequest
 data class AuthorRequest(
-    @UniqueStringField(AuthorTable::class, "name") val name: String,
-    val email: String,
-    val description: String,
-) {
-    fun validate(): ValidationResult {
+    @NotBlank @UniqueStringField(AuthorTable::class, "name") val name: String,
+    @NotBlank @UniqueStringField(AuthorTable::class, "email") val email: String,
+    @NotBlank val description: String,
+) : Validatable {
+    override suspend fun validate(): ValidationResult {
         val violations =
             buildList {
-                if (name.isBlank()) {
-                    add("name cannot be blank")
-                }
-                if (description.isBlank()) {
-                    add("description cannot be blank")
-                }
                 if (description.length > 400) {
                     add("description cannot be greater than 400 characters")
-                }
-                if (email.isBlank()) {
-                    add("email cannot be blank")
                 }
                 if (!isValidEmail(email)) {
                     add("email has to be valid")

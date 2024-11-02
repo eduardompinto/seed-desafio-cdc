@@ -2,6 +2,7 @@ package eduardompinto.country
 
 import eduardompinto.country.state.CountryState
 import eduardompinto.plugins.UniqueStringField
+import eduardompinto.plugins.ValidRequest
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.dao.id.IntIdTable
 
@@ -15,6 +16,7 @@ data class Country(
 }
 
 @Serializable
+@ValidRequest
 data class CountryRequest(
     @UniqueStringField(CountryTable::class, "name")
     val name: String,

@@ -5,6 +5,8 @@ import eduardompinto.book.BookTable
 import eduardompinto.category.CategoryTable
 import eduardompinto.country.CountryTable
 import eduardompinto.country.state.CountryStateTable
+import eduardompinto.discounts.DiscountVoucherTable
+import eduardompinto.purchase.PurchaseTable
 import io.ktor.server.application.Application
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.sql.Database
@@ -26,7 +28,7 @@ val database by lazy {
 fun Application.configureDatabases() {
     database
     transaction {
-        SchemaUtils.create(*tables.toTypedArray())
+        SchemaUtils.createMissingTablesAndColumns(*tables.toTypedArray())
     }
 }
 
@@ -39,4 +41,6 @@ val tables =
         BookTable,
         CountryTable,
         CountryStateTable,
+        PurchaseTable,
+        DiscountVoucherTable,
     )

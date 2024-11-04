@@ -1,10 +1,11 @@
 package eduardompinto.author
 
+import eduardompinto.commons.Email
+import eduardompinto.commons.Email.Companion.asEmail
 import eduardompinto.plugins.NotBlank
 import eduardompinto.plugins.UniqueStringField
 import eduardompinto.plugins.ValidRequest
 import eduardompinto.plugins.Validatable
-import eduardompinto.plugins.isValidEmail
 import io.ktor.server.plugins.requestvalidation.ValidationResult
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.dao.id.IntIdTable
@@ -17,7 +18,7 @@ import java.time.Instant
  */
 data class Author(
     val name: String,
-    val email: String,
+    val email: Email,
     val description: String,
     val createdAt: Instant = Instant.now(),
 ) {
@@ -25,8 +26,6 @@ data class Author(
         require(name.isNotBlank()) { "name cannot be blank" }
         require(description.isNotBlank()) { "description cannot be blank" }
         require(description.length <= 400) { "description cannot be greater than 400 characters" }
-        require(email.isNotBlank()) { "email cannot be blank" }
-        require(isValidEmail(email)) { "email has to be valid" }
     }
 }
 
@@ -47,7 +46,7 @@ data class AuthorRequest(
                 if (description.length > 400) {
                     add("description cannot be greater than 400 characters")
                 }
-                if (!isValidEmail(email)) {
+                if (!Email.isValid(email)) {
                     add("email has to be valid")
                 }
             }
@@ -58,7 +57,7 @@ data class AuthorRequest(
         }
     }
 
-    fun toAuthor() = Author(name, email, description)
+    fun toAuthor() = Author(name, email.asEmail(), description)
 }
 
 /**
@@ -72,7 +71,7 @@ data class ExposedAuthor(
     val description: String,
 ) {
     companion object {
-        fun fromAuthor(author: Author) = ExposedAuthor(author.name, author.email, author.description)
+        fun fromAuthor(author: Author) = ExposedAuthor(author.name, author.email.value, author.description)
     }
 }
 

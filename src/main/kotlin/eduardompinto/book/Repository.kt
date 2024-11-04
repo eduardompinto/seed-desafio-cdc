@@ -48,4 +48,13 @@ object Repository {
                 }
         }
     }
+
+    suspend fun findBookIdAndPrice(booksId: Iterable<Int>) =
+        dbQuery {
+            BookTable.select(BookTable.id, BookTable.price).where {
+                BookTable.id inList booksId
+            }.associate {
+                it[BookTable.id].value to it[BookTable.price].toBigDecimal()
+            }
+        }
 }

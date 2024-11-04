@@ -5,6 +5,8 @@ import eduardompinto.book.books
 import eduardompinto.category.categories
 import eduardompinto.country.country
 import eduardompinto.country.state.countryState
+import eduardompinto.discounts.discounts
+import eduardompinto.purchase.purchases
 import io.ktor.server.application.Application
 import io.ktor.server.routing.routing
 
@@ -15,5 +17,7 @@ fun Application.configureRouting() {
         books()
         country()
         countryState()
+        purchases()
+        discounts()
     }
 }

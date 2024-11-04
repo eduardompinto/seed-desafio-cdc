@@ -1,4 +1,3 @@
-
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.ktor)
@@ -34,6 +33,7 @@ dependencies {
     implementation(libs.exposed.core)
     implementation(libs.exposed.jdbc)
     implementation(libs.exposed.java.time)
+    implementation(libs.exposed.json)
     implementation(libs.ktor.server.netty)
     implementation(libs.logback.classic)
     implementation(libs.ktor.server.config.yaml)
@@ -41,4 +41,5 @@ dependencies {
     testImplementation(libs.kotlin.test.junit)
     testImplementation(libs.testcontainers)
     testImplementation(libs.testcontainers.postgresql)
+    implementation("org.postgresql:postgresql:42.7.4")
 }

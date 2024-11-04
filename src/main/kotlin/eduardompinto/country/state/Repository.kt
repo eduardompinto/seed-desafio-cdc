@@ -3,6 +3,8 @@ package eduardompinto.country.state
 import eduardompinto.country.CountryTable
 import eduardompinto.plugins.dbQuery
 import org.jetbrains.exposed.sql.JoinType
+import org.jetbrains.exposed.sql.StdOutSqlLogger
+import org.jetbrains.exposed.sql.addLogger
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
@@ -18,10 +20,14 @@ object Repository {
             }[CountryStateTable.id].value
         }
 
-    fun countryStateExists(countryState: CountryState): Boolean {
-        return CountryStateTable.join(CountryTable, JoinType.LEFT, CountryTable.id, CountryStateTable.countryId).selectAll()
-            .where {
-                (CountryTable.name eq countryState.country) and (CountryStateTable.name eq countryState.name)
-            }.count() > 0
+    suspend fun countryStateExists(countryState: CountryState): Boolean {
+        return dbQuery {
+            addLogger(StdOutSqlLogger)
+            CountryStateTable.join(CountryTable, JoinType.LEFT, CountryTable.id, CountryStateTable.countryId)
+                .selectAll()
+                .where {
+                    (CountryTable.name eq countryState.country) and (CountryStateTable.name eq countryState.name)
+                }.count() > 0
+        }
     }
 }

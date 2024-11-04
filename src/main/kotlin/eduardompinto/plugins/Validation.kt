@@ -25,69 +25,6 @@ fun Application.configureValidation() {
     }
 }
 
-// AI generated code
-private val emailRegex =
-    "^(?=.{1,256})(?=.{1,64}@.{1,255}$)[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,63}$".toRegex(
-        RegexOption.IGNORE_CASE,
-    )
-
-fun isValidEmail(email: String): Boolean {
-    return email.matches(emailRegex)
-}
-
-/**
- * AI generated code, I didn't wanted to implement this
- */
-fun isValidCPF(candidate: String): Boolean {
-    val normalizedCandidate = candidate.replace("[^0-9]".toRegex(), "").substring(0, 11)
-    if (normalizedCandidate.length != 11 || normalizedCandidate.all { it == normalizedCandidate[0] }) {
-        return false
-    }
-
-    fun calculateDigit(digits: String): Int {
-        val sum =
-            digits.mapIndexed { index, char ->
-                val multiplier = 11 - index
-                char.toString().toInt() * multiplier
-            }.sum()
-        val remainder = sum % 11
-        return if (remainder < 2) 0 else 11 - remainder
-    }
-
-    val firstDigit = calculateDigit(normalizedCandidate.substring(0, 9))
-    if (firstDigit != normalizedCandidate[9].toString().toInt()) {
-        return false
-    }
-
-    val secondDigit = calculateDigit("${normalizedCandidate.substring(0, 9)}$firstDigit")
-    return secondDigit == normalizedCandidate[10].toString().toInt()
-}
-
-/**
- * AI generated code, I didn't wanted to implement this
- */
-fun isValidCNPJ(candidate: String): Boolean {
-    if (candidate.length != 14) return false
-
-    val normalizedCandidate = candidate.replace("[^0-9]".toRegex(), "")
-
-    fun calculateDigit(position: Int): Int {
-        val sum =
-            (0 until 12).sumOf { i ->
-                normalizedCandidate[i + position].toString().toInt() * (13 - i)
-            }
-        return 11 - (sum % 11) % 11
-    }
-
-    val firstDigit = calculateDigit(0)
-    if (firstDigit != normalizedCandidate[12].toString().toInt()) {
-        return false
-    }
-
-    val secondDigit = calculateDigit(1)
-    return secondDigit == normalizedCandidate[13].toString().toInt()
-}
-
 suspend fun validateRowExist(
     table: IntIdTable,
     id: Int,
@@ -154,7 +91,7 @@ private suspend fun customValidator(any: Any): ValidationResult {
         is Validatable -> any.validate()
         else -> {
             // Looks for validate function and tries to call it.
-            // Bad stuff, but it's a toy project and I it was something nice to learn
+            // Bad stuff, but it's a toy project, and it was something nice to learn
             val validateFunction =
                 any::class.memberFunctions.find {
                     it.name == "validate"

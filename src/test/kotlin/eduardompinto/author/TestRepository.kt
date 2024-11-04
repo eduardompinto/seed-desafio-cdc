@@ -1,5 +1,6 @@
 package eduardompinto.author
 
+import eduardompinto.commons.Email.Companion.asEmail
 import eduardompinto.infra.TestDatabase
 import eduardompinto.infra.TestDatabase.database
 import kotlinx.coroutines.runBlocking
@@ -53,7 +54,7 @@ class TestRepository {
             Author(
                 name = "Eduardo Pinto",
                 description = "Software Engineer",
-                email = "edu@gmail.com",
+                email = "edu@gmail.com".asEmail(),
             )
         val author2 =
             author.copy(

@@ -1,5 +1,6 @@
 package eduardompinto.author
 
+import eduardompinto.commons.Email.Companion.asEmail
 import eduardompinto.plugins.dbQuery
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
@@ -12,7 +13,7 @@ object Repository {
             AuthorTable.insert { statement ->
                 statement[name] = author.name
                 statement[description] = author.description
-                statement[email] = author.email
+                statement[email] = author.email.value
                 statement[createdAt] = LocalDateTime.ofInstant(author.createdAt, ZoneOffset.UTC)
             }[AuthorTable.id].value
         }
@@ -24,7 +25,7 @@ object Repository {
                     Author(
                         name = row[AuthorTable.name],
                         description = row[AuthorTable.description],
-                        email = row[AuthorTable.email],
+                        email = row[AuthorTable.email].asEmail(),
                         createdAt = row[AuthorTable.createdAt].toInstant(ZoneOffset.UTC),
                     )
                 }
